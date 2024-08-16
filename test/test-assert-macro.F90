@@ -53,6 +53,10 @@ program test_assert_macros
 
   end block
 
+  call_assert(100 == 200)
+  ! call_assert(100 + 200 + 1 + 1 + 1 + 1 + 1 == 2 + 2 + 2 + 2 + 3 + 1)
+  call_assert_diagnose(1==2, "up is down", diagnostic_data=1)
+
 #undef DEBUG
 #include "assert_macros.h"
   call_assert_describe(.false., "")

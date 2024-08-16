@@ -6,8 +6,21 @@
 #undef call_assert_describe
 #undef call_assert_diagnose
 
-#ifdef DEBUG
-# define call_assert(assertion) call assert(assertion, "No description provided (see file " // __FILE__ // ", line " // string(__LINE__) // ")")
+! Check user-provided flags to decide whether assertions are enabled
+#if defined(DEBUG) && defined(NDEBUG)
+# error Please define at most one of DEBUG or NDEBUG
+#endif
+
+! Deal with Fortran's stringification debacle:
+! https://gcc.gnu.org/legacy-ml/fortran/2009-06/msg00131.html
+#ifdef __GFORTRAN__
+#define STRINGIFY(x) "x"
+#else
+#define STRINGIFY(x) #x
+#endif
+
+#if defined(DEBUG)
+# define call_assert(assertion) call assert(assertion, STRINGIFY(assertion) // " in file " // __FILE__ // ", line " // string(__LINE__) // ")")
 # define call_assert_describe(assertion, description) call assert(assertion, description // " in file " // __FILE__ // ", line " // string(__LINE__) // ": " )
 # define call_assert_diagnose(assertion, description, diagnostic_data) call assert(assertion, "file " // __FILE__ // ", line " // string(__LINE__) // ": " // description, diagnostic_data)
 #else
