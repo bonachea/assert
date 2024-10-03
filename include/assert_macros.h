@@ -22,11 +22,12 @@
 #endif
 
 #if ASSERTIONS
-# define call_assert(assertion) call assert(assertion, "call_assert(" // STRINGIFY(assertion) // ") in file " // __FILE__ // ", line " // string(__LINE__))
-# define call_assert_describe(assertion, description) call assert(assertion, description // " in file " // __FILE__ // ", line " // string(__LINE__))
-# define call_assert_diagnose(assertion, description, diagnostic_data) call assert(assertion, description // " in file " // __FILE__ // ", line " // string(__LINE__), diagnostic_data)
+#  define call_assert_3(cond, desc, data) call assert(cond, "file " // __FILE__ // ", line " // string(__LINE__) // ": " // desc, data)
+#  define call_assert_2(cond, desc) call assert(cond, "file " // __FILE__ // ", line " // string(__LINE__) // ": " // desc)
+#  define call_assert_1(cond) call_assert_2(cond, "Failed assertion: " // STRINGIFY(cond))
+#  define call_assert_dispatch(_1, _2, _3, NAME, ...) NAME
+#  define call_assert(...) call_assert_dispatch(__VA_ARGS__, call_assert_3, call_assert_2, call_assert_1, _DUMMY)(__VA_ARGS__)
 #else
-# define call_assert(assertion)
-# define call_assert_describe(assertion, description)
-# define call_assert_diagnose(assertion, description, diagnostic_data)
+#  define call_assert(...) 
 #endif
+
