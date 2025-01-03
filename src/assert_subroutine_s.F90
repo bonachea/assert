@@ -4,23 +4,32 @@
 !     "Multi-Dimensional Physics Implementation into Fuel Analysis under Steady-state and Transients (FAST)",
 !     contract # NRC-HQ-60-17-C-0007
 !
+
+#include "assert_features.h"
+
 submodule(assert_subroutine_m) assert_subroutine_s
   implicit none
 
 contains
 
   module procedure assert
+
+    toggle_assertions: &
+    if (enforce_assertions) then
+        call assert_always(assertion, description, diagnostic_data)
+    end if toggle_assertions
+    
+  end procedure
+
+  module procedure assert_always
     use characterizable_m, only : characterizable_t
 
     character(len=:), allocatable :: header, trailer
 
-    toggle_assertions: &
-    if (enforce_assertions) then
-
       check_assertion: &
       if (.not. assertion) then
 
-#ifndef __flang__
+#if ASSERT_MULTI_IMAGE
         associate(me=>this_image()) ! work around gfortran bug
           header = 'Assertion "' // description // '" failed on image ' // string(me)
         end associate
@@ -31,7 +40,7 @@ contains
         represent_diagnostics_as_string: &
         if (.not. present(diagnostic_data)) then
 
-          trailer = "(none provided)"
+          trailer = ""
 
         else
 
@@ -51,15 +60,14 @@ contains
             class default
               trailer = "of unsupported type."
           end select
+          trailer = ' with diagnostic data "' // trailer // '"'
 
         end if represent_diagnostics_as_string
 
-        error stop header // ' with diagnostic data "' // trailer // '"'
+        error stop header // trailer
 
       end if check_assertion
 
-    end if toggle_assertions
-    
   contains
     
     pure function string(numeric) result(number_as_string)
