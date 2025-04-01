@@ -45,7 +45,6 @@ jobs:
       GCC_VERSION: ${{ matrix.version }}
       FC: ${{ matrix.compiler }}
       FPM_FLAGS:  --profile release --verbose
-      EXTRA_FLAGS: ${{ matrix.extra_flags }}
 
     steps:
     - name: Checkout code
@@ -96,17 +95,17 @@ jobs:
     - name: Build and Test (Assertions OFF)
       run: |
         set -x
-        fpm test                              ${FPM_FLAGS} --flag "${{ env.EXTRA_FLAGS }}"
-        fpm run  --example false-assertion    ${FPM_FLAGS} --flag "${{ env.EXTRA_FLAGS }}"
-        fpm run  --example invoke-via-macro   ${FPM_FLAGS} --flag "${{ env.EXTRA_FLAGS }}"
+        fpm test                              ${FPM_FLAGS} --flag "${{ matrix.EXTRA_FLAGS }}"
+        fpm run  --example false-assertion    ${FPM_FLAGS} --flag "${{ matrix.EXTRA_FLAGS }}"
+        fpm run  --example invoke-via-macro   ${FPM_FLAGS} --flag "${{ matrix.EXTRA_FLAGS }}"
 
     - name: Build and Test (Assertions ON)
       env:
         FPM_FLAGS: ${{ env.FPM_FLAGS }} --flag -DASSERTIONS
       run: |
         set -x
-                   fpm test                            ${FPM_FLAGS} --flag "${{ env.EXTRA_FLAGS }}"
-        ( set +e ; fpm run  --example false-assertion  ${FPM_FLAGS} --flag "${{ env.EXTRA_FLAGS }}" ; test $? = 1 )
-        ( set +e ; fpm run  --example invoke-via-macro ${FPM_FLAGS} --flag "${{ env.EXTRA_FLAGS }}" ; test $? = 1 )
+                   fpm test                            ${FPM_FLAGS} --flag "${{ matrix.EXTRA_FLAGS }}"
+        ( set +e ; fpm run  --example false-assertion  ${FPM_FLAGS} --flag "${{ matrix.EXTRA_FLAGS }}" ; test $? = 1 )
+        ( set +e ; fpm run  --example invoke-via-macro ${FPM_FLAGS} --flag "${{ matrix.EXTRA_FLAGS }}" ; test $? = 1 )
 
 
