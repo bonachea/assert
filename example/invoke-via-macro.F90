@@ -3,10 +3,6 @@
 program invoke_via_macro
   !! Demonstrate how to invoke the 'assert' subroutine using a preprocessor macro that facilitates
   !! the complete removal of the call in the absence of the compiler flag: -DASSERTIONS
-  use assert_m ! <--- this is the recommended use statement
-    !! If an "only" clause is employed above, the symbols required by the
-    !! macro expansion are subject to change without notice between versions.
-    !! You have been warned!
   implicit none
 
 #if !ASSERTIONS
@@ -22,6 +18,12 @@ program invoke_via_macro
   ! these calls will be entirely removed by the preprocessor.
 
   call_assert(1==1) ! true assertion
+  call_assert(1==0)
+block
+  !if (.true.) call_assert(1==0)
+  use assert_m ! <--- this is the recommended use statement
+  if (.true.) call_assert_describe(1==0,"goo")
+  if (.true.) call assert(1==0, "foo") 
   call_assert_describe(2>0,    "example assertion invocation via macro") ! true assertion
   call_assert_diagnose(1+1==2, "example with scalar diagnostic data", 1+1) ! true assertion
 #if ASSERTIONS
@@ -32,5 +34,7 @@ program invoke_via_macro
   !call_assert(1+1>2)
   !call_assert_describe(1+1>2, "Mathematics is broken!")
   call_assert_diagnose(1+1>2,  "example with array diagnostic data" , intrinsic_array_t([1,1,2])) ! false assertion
+
+end block
 
 end program invoke_via_macro

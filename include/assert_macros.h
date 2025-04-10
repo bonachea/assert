@@ -22,7 +22,11 @@
 #endif
 
 #if ASSERTIONS
-# define call_assert(assertion) call assert_always(assertion, "call_assert(" // CPP_STRINGIFY_SOURCE(assertion) // ") in file " // __FILE__ // ", line " // fortran_stringify_integer(__LINE__))
+#if 0
+# define call_assert(assertion) block ; use assert_m ; call assert_always(assertion, "call_assert(" // CPP_STRINGIFY_SOURCE(assertion) // ") in file " // __FILE__ // ", line " // fortran_stringify_integer(__LINE__)) ; end block
+#else
+# define call_assert(assertion) call assert_m::assert_always(assertion, "call_assert(" // CPP_STRINGIFY_SOURCE(assertion) // ") in file " // __FILE__ // ", line " // fortran_stringify_integer(__LINE__)) 
+#endif
 # define call_assert_describe(assertion, description) call assert_always(assertion, description // " in file " // __FILE__ // ", line " // fortran_stringify_integer(__LINE__))
 # define call_assert_diagnose(assertion, description, diagnostic_data) call assert_always(assertion, description // " in file " // __FILE__ // ", line " // fortran_stringify_integer(__LINE__), diagnostic_data)
 #else
