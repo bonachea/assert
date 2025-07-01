@@ -24,17 +24,22 @@ contains
   module procedure assert_always
     use characterizable_m, only : characterizable_t
 
-    character(len=:), allocatable :: header, trailer
+    character(len=:), allocatable :: header, trailer, message
+    integer :: me
 
       check_assertion: &
       if (.not. assertion) then
 
 #if ASSERT_MULTI_IMAGE
-        associate(me=>this_image()) ! work around gfortran bug
-          header = 'Assertion "' // description // '" failed on image ' // string(me)
-        end associate
+#  if ASSERT_PARALLEL_CALLBACKS
+        me = assert_this_image()
+#  else
+        me = this_image()
+#  endif
+        header = 'Assertion "' // description // '" failed on image ' // string(me)
 #else
-          header = 'Assertion "' // description // '" failed.'
+        header = 'Assertion "' // description // '" failed.'
+        me = 0 ! avoid a harmless warning
 #endif
  
         represent_diagnostics_as_string: &
@@ -64,7 +69,13 @@ contains
 
         end if represent_diagnostics_as_string
 
-        error stop header // trailer
+        message = header // trailer
+
+#if ASSERT_PARALLEL_CALLBACKS
+        call assert_error_stop(message)
+#else
+        error stop message, QUIET=.false.
+#endif
 
       end if check_assertion
 
