@@ -141,7 +141,7 @@ contains
 #endif
  
 #if ASSERT_PARALLEL_CALLBACKS
-        if (associated(assert_this_image)) then
+        if (associated(assert_error_stop)) then
           call assert_error_stop(message)
         else
           ; ! deliberate fall-thru
