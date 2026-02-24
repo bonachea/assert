@@ -237,7 +237,8 @@ jobs:
       uses: fortran-lang/setup-fpm@main
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        fpm-version: latest
+        fpm-version: v0.12.0  # fpm v0.13.0 breaks LFortran
+        #fpm-version: latest
 
     - name: Build FPM
       if: false
