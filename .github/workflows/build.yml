@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-14, macos-15, macos-15-intel, macos-26, macos-26-intel, ubuntu-24.04 ]
+        os: [ macos-14, macos-15, macos-15-intel, macos-26, macos-26-intel, ubuntu-24.04, ubuntu-26.04-arm ]
         compiler: [ gfortran ]
         version: [ 12, 13, 14, 15, 16 ]
         extra_flags: [ -g ]
@@ -73,6 +73,10 @@ jobs:
             container: snowstep/llvm:jammy
 
           # https://hub.docker.com/r/phhargrove/llvm-flang/tags
+          - os: ubuntu-24.04
+            compiler: flang
+            version: 23
+            container: phhargrove/llvm-flang:23.1.0_rc2-latest
           - os: ubuntu-24.04
             compiler: flang
             version: 22
@@ -218,7 +222,7 @@ jobs:
         sudo apt-get update
         #sudo apt list -a 'gfortran-*'
         sudo apt install -y build-essential
-        if [[ ${COMPILER_VERSION} -lt 15 ]] ; then
+        if [[ ${COMPILER_VERSION} -lt 15 ]] || type -p gfortran-${COMPILER_VERSION} ; then
           sudo apt install -y gfortran-${COMPILER_VERSION}
         else
           curl -L https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -o install-homebrew.sh
@@ -293,18 +297,20 @@ jobs:
         echo "ERROR_STOP_CODE=${ERROR_STOP_CODE}" >> "$GITHUB_ENV"
 
     - name: Setup FPM
+      if: ${{ !(runner.os == 'Linux' && runner.arch == 'ARM64') }}
       uses: fortran-lang/setup-fpm@main
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         fpm-version: latest
 
     - name: Build FPM
-      if: false
+      if: ${{ runner.os == 'Linux' && runner.arch == 'ARM64' }}
       run: |
-        curl --retry 5 -LOsS https://github.com/fortran-lang/fpm/releases/download/v0.11.0/fpm-0.11.0.F90
+        export FPM_VERSION=0.13.0
+        curl --retry 5 -LOsS https://github.com/fortran-lang/fpm/releases/download/v$FPM_VERSION/fpm-$FPM_VERSION.F90
         mkdir fpm-temp
-        gfortran-14 -o fpm-temp/fpm fpm-0.11.0.F90
-        echo "PATH=`pwd`/fpm-temp:${PATH}" >> "$GITHUB_ENV"
+        gfortran-14 -o fpm-temp/fpm fpm-$FPM_VERSION.F90
+        echo "PATH=${PWD}/fpm-temp:${PATH}" >> "$GITHUB_ENV"
 
     - name: Version info
       run: |
