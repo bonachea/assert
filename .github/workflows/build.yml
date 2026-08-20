@@ -296,14 +296,14 @@ jobs:
         echo "ERROR_STOP_CODE=${ERROR_STOP_CODE}" >> "$GITHUB_ENV"
 
     - name: Setup FPM
-      if: ${{ !(runner.os == 'Linux' && runner.arch == 'ARM64') }}
+      if: true
       uses: fortran-lang/setup-fpm@main
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         fpm-version: latest
 
     - name: Build FPM
-      if: ${{ runner.os == 'Linux' && runner.arch == 'ARM64' }}
+      if: false 
       run: |
         export FPM_VERSION=0.13.0
         curl --retry 5 -LOsS https://github.com/fortran-lang/fpm/releases/download/v$FPM_VERSION/fpm-$FPM_VERSION.F90
