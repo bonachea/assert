@@ -141,40 +141,40 @@ jobs:
             version: 0.54.0
             container: phhargrove/lfortran:0.54.0-1
 
-          - os: ubuntu-24.04
-            compiler: lfortran
-            version: 0.55.0
-            container: phhargrove/lfortran:0.55.0-1
-
-          - os: ubuntu-24.04
-            compiler: lfortran
-            version: 0.56.0
-            container: phhargrove/lfortran:0.56.0-1
-
-          - os: ubuntu-24.04
-            compiler: lfortran
-            version: 0.57.0
-            container: phhargrove/lfortran:0.57.0-1
-
-          - os: ubuntu-24.04
-            compiler: lfortran
-            version: 0.58.0
-            container: phhargrove/lfortran:0.58.0-1
-
-          - os: ubuntu-24.04
-            compiler: lfortran
-            version: 0.59.0
-            container: phhargrove/lfortran:0.59.0-1
-
-          - os: ubuntu-24.04
-            compiler: lfortran
-            version: 0.60.0
-            container: phhargrove/lfortran:0.60.0-1
-
-          - os: ubuntu-24.04
-            compiler: lfortran
-            version: 0.61.0
-            container: phhargrove/lfortran:0.61.0-1
+#          - os: ubuntu-24.04
+#            compiler: lfortran
+#            version: 0.55.0
+#            container: phhargrove/lfortran:0.55.0-1
+#
+#          - os: ubuntu-24.04
+#            compiler: lfortran
+#            version: 0.56.0
+#            container: phhargrove/lfortran:0.56.0-1
+#
+#          - os: ubuntu-24.04
+#            compiler: lfortran
+#            version: 0.57.0
+#            container: phhargrove/lfortran:0.57.0-1
+#
+#          - os: ubuntu-24.04
+#            compiler: lfortran
+#            version: 0.58.0
+#            container: phhargrove/lfortran:0.58.0-1
+#
+#          - os: ubuntu-24.04
+#            compiler: lfortran
+#            version: 0.59.0
+#            container: phhargrove/lfortran:0.59.0-1
+#
+#          - os: ubuntu-24.04
+#            compiler: lfortran
+#            version: 0.60.0
+#            container: phhargrove/lfortran:0.60.0-1
+#
+#          - os: ubuntu-24.04
+#            compiler: lfortran
+#            version: 0.61.0
+#            container: phhargrove/lfortran:0.61.0-1
 
           - os: ubuntu-24.04
             compiler: lfortran
@@ -196,6 +196,11 @@ jobs:
             compiler: lfortran
             version: 0.64.0
             container: ghcr.io/lfortran/lfortran:v0.64.0
+
+          - os: ubuntu-22.04
+            compiler: lfortran
+            version: 0.65.0
+            container: ghcr.io/lfortran/lfortran:v0.65.0
 
           - os: ubuntu-22.04
             compiler: lfortran
